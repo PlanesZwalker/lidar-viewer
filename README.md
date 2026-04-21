@@ -36,9 +36,13 @@ A WebGL2-accelerated drone LiDAR point cloud viewer built as a pnpm monorepo.
 
 Measure distances, areas, volumes, heights and angles directly in the viewer. Results appear in the panel on the right with one-click CSV export.
 
-| Measurement tool active | Measurements panel |
+| Distance | Area |
 |---|---|
-| ![Measurement tool](docs/screenshots/07-measure-distance.png) | ![Measurements panel](docs/screenshots/09-measurements-panel.png) |
+| ![Distance measurement](docs/screenshots/07-measure-distance.png) | ![Area measurement](docs/screenshots/10-measure-area.png) |
+
+| Volume | Height |
+|---|---|
+| ![Volume measurement](docs/screenshots/11-measure-volume.png) | ![Height measurement](docs/screenshots/12-measure-height.png) |
 
 ---
 

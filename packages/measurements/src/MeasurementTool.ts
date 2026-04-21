@@ -44,6 +44,15 @@ export class MeasurementTool {
     this.scene.add(this.lineGroup);
 
     this.domElement.addEventListener('click', this.onClick);
+
+    // Sync 3-D objects with the store — remove orphaned markers/lines when
+    // the panel's "Clear all" or "×" buttons delete store entries.
+    store.subscribe((measurements) => {
+      const liveIds = new Set(measurements.map((m) => m.id));
+      for (const id of [...this.markers.keys()]) {
+        if (!liveIds.has(id)) this._remove3D(id);
+      }
+    });
   }
 
   /** Start a new measurement of the given type. */
@@ -63,8 +72,8 @@ export class MeasurementTool {
     this.domElement.style.cursor = '';
   }
 
-  /** Remove all Three.js objects for a measurement. */
-  removeMeasurement(id: string): void {
+  /** Remove all Three.js objects for a measurement (without touching the store). */
+  private _remove3D(id: string): void {
     const existingMarkers = this.markers.get(id);
     if (existingMarkers) {
       for (const m of existingMarkers) {
@@ -79,6 +88,11 @@ export class MeasurementTool {
       line.geometry.dispose();
       this.lines.delete(id);
     }
+  }
+
+  /** Remove all Three.js objects for a measurement AND delete it from the store. */
+  removeMeasurement(id: string): void {
+    this._remove3D(id);
     this.store.remove(id);
   }
 
