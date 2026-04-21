@@ -24,9 +24,8 @@ export class PointCloudOctree extends THREE.Object3D {
     // Apply coordinate offset so the cloud is centered near the world origin
     this.position.copy(geometry.offset).negate();
 
-    // Elevation range from the overall bounding box (absolute Lambert 93 Z)
-    const eMin = geometry.boundingBox.min.z;
-    const eMax = geometry.boundingBox.max.z;
+    // Elevation range from real LAS header extents (not the padded COPC cube)
+    const [eMin, eMax] = geometry.metadata.elevationRange ?? [geometry.boundingBox.min.y, geometry.boundingBox.max.y];
     this.material.uniforms['uElevationMin']!.value = eMin;
     this.material.uniforms['uElevationMax']!.value = eMax;
     this.gaussianMaterial.uniforms['uElevationMin']!.value = eMin;

@@ -64,4 +64,9 @@ export interface PointCloudMetadata {
   attributes: PointAttribute[];
   /** True when the file contains actual RGB camera colours (LAS PDRF 2/3/5/7/8/10). */
   hasRGB?: boolean;
+  /**
+   * Real altitude range from the LAS header (not the padded COPC cube).
+   * [altitudeMin, altitudeMax] in the same units as position.y after Y↔Z swap.
+   */
+  elevationRange?: [number, number];
 }

@@ -187,10 +187,12 @@ export function ViewerCanvas({ cloudUrl, measurementStore, activeTool, onToolFin
       // No artificial minimum zoom — clamped to 0.1 world units in the wheel handler.
       updateCamera();
 
-      // Set elevation range from actual bounding box Y (altitude after LAS Y↔Z swap)
-      pco.material.updateElevationRange(bb.min.y, bb.max.y);
-      pco.gaussianMaterial.setElevationRange(bb.min.y, bb.max.y);
-
+      // Set elevation range from real LAS header extents (not the padded COPC cube)
+      const elevRange = pco.geometry.metadata.elevationRange;
+      if (elevRange) {
+        pco.material.updateElevationRange(elevRange[0], elevRange[1]);
+        pco.gaussianMaterial.setElevationRange(elevRange[0], elevRange[1]);
+      }
       // Store reset callback so external resetTrigger can restore initial view
       const initialTarget = center.clone();
       const initialRadius = spherical.radius;

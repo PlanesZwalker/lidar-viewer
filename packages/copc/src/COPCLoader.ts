@@ -90,6 +90,15 @@ export class COPCLoader implements IPointCloudLoader {
     const RGB_PDRFS = new Set([2, 3, 5, 7, 8, 10]);
     const hasRGB = RGB_PDRFS.has(header.pointDataRecordFormat);
 
+    // header.min/max are the ACTUAL data extents (not the padded COPC cube).
+    // LAS Z (index 2) = altitude. We swap to Three.js Y, so altMin = header.min[2].
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const hMin = header.min as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const hMax = header.max as any;
+    const altMin: number = Array.isArray(hMin) ? hMin[2] : hMin.z ?? minz;
+    const altMax: number = Array.isArray(hMax) ? hMax[2] : hMax.z ?? maxz;
+
     const metadata: PointCloudMetadata = {
       version: '1.4',
       name:
@@ -105,6 +114,7 @@ export class COPCLoader implements IPointCloudLoader {
       encoding: 'COPC',
       attributes,
       hasRGB,
+      elevationRange: [altMin, altMax],
     };
 
     // 4. Create OctreeGeometry (its constructor creates the root node)

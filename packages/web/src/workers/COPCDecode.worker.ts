@@ -98,6 +98,35 @@ self.onmessage = async (evt: MessageEvent<DecodeRequest>) => {
     const colorsClass     = new Float32Array(n * 3);
     const colorsIntensity = new Float32Array(n * 3);
 
+    // Detect RGB bit-depth: sample first 500 pts. Values ≤ 255 → 8-bit stored in 16-bit field.
+    let rgbScale = 65535;
+    if (getR && getG && getB) {
+      let sMax = 0;
+      const sN = Math.min(n, 500);
+      for (let j = 0; j < sN; j++) {
+        const m = Math.max(getR(j), getG(j), getB(j));
+        if (m > sMax) sMax = m;
+      }
+      if (sMax > 0 && sMax <= 255) rgbScale = 255;
+    }
+
+    // sRGB → linear (IEC 61966-2-1) for ACES tonemapping
+    const srgbToLinear = (c: number): number =>
+      c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+
+    // Detect intensity range: normalise to observed max to avoid near-black for
+    // IGN LiDAR HD files that store 12-bit intensity (0–4095) in a 16-bit field.
+    let intensityMax = 65535;
+    if (getI) {
+      let iMax = 0;
+      const sN = Math.min(n, 500);
+      for (let j = 0; j < sN; j++) {
+        const v = getI(j);
+        if (v > iMax) iMax = v;
+      }
+      if (iMax > 0) intensityMax = iMax;
+    }
+
     for (let i = 0; i < n; i++) {
       const b = i * 3;
 
@@ -106,11 +135,11 @@ self.onmessage = async (evt: MessageEvent<DecodeRequest>) => {
       positions[b + 1] = getZ(i);  // altitude → Y
       positions[b + 2] = getY(i);  // northing → Z
 
-      // RGB
+      // RGB (sRGB → linear so ACES/output tonemapping renders correctly)
       if (getR && getG && getB) {
-        colors[b + 0] = getR(i) / 65535;
-        colors[b + 1] = getG(i) / 65535;
-        colors[b + 2] = getB(i) / 65535;
+        colors[b + 0] = srgbToLinear(getR(i) / rgbScale);
+        colors[b + 1] = srgbToLinear(getG(i) / rgbScale);
+        colors[b + 2] = srgbToLinear(getB(i) / rgbScale);
       } else {
         colors[b + 0] = colors[b + 1] = colors[b + 2] = 0.8;
       }
@@ -122,8 +151,9 @@ self.onmessage = async (evt: MessageEvent<DecodeRequest>) => {
       colorsClass[b + 1] = cc[1];
       colorsClass[b + 2] = cc[2];
 
-      // Intensity
-      const intensity = getI ? getI(i) / 65535 : 0.5;
+      // Intensity: sqrt for perceptual gamma so mid-range values appear mid-grey
+      const rawI = getI ? getI(i) : intensityMax * 0.5;
+      const intensity = Math.sqrt(rawI / intensityMax);
       colorsIntensity[b + 0] = colorsIntensity[b + 1] = colorsIntensity[b + 2] = intensity;
     }
 
