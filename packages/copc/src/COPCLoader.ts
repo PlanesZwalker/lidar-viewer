@@ -333,6 +333,21 @@ export class COPCLoader implements IPointCloudLoader {
     const srgbToLinear = (c: number): number =>
       c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
 
+    // Detect intensity range: sample first 500 pts to find the peak value.
+    // IGN LiDAR HD records intensity as 12-bit (0–4095) in a 16-bit field.
+    // Dividing by 65535 would give values ≤ 0.06 → near-black greyscale.
+    // Normalise to the observed max so the full 0–1 range is always used.
+    let intensityMax = 65535;
+    if (getI) {
+      let sampleMax = 0;
+      const sampleN = Math.min(n, 500);
+      for (let j = 0; j < sampleN; j++) {
+        const v = getI(j);
+        if (v > sampleMax) sampleMax = v;
+      }
+      if (sampleMax > 0) intensityMax = sampleMax;
+    }
+
     // Classification color palette (IGN LiDAR HD classes, ASPRS ext.)
     const classColors: [number, number, number][] = [
       [0.5, 0.5, 0.5],   // 0: Never classified
@@ -373,7 +388,9 @@ export class COPCLoader implements IPointCloudLoader {
       colorsClass[b3 + 2] = cc[2];
 
       // Intensity channel (always written)
-      const intensity = getI ? getI(i) / 65535 : 0.5;
+      const rawI = getI ? getI(i) : intensityMax * 0.5;
+      // sqrt gives perceptual gamma so mid-range values appear mid-grey
+      const intensity = Math.sqrt(rawI / intensityMax);
       colorsIntensity[b3 + 0] = colorsIntensity[b3 + 1] = colorsIntensity[b3 + 2] = intensity;
     }
 

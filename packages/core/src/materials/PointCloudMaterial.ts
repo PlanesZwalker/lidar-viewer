@@ -38,8 +38,8 @@ const VERT_SHADER = /* glsl */`
     vColor         = color;
     vColorClass    = colorClass;
     vColorIntensity = colorIntensity;
-    // Use object-space Z as elevation (absolute Lambert 93 metres ASL)
-    vElevation = position.z;
+    // Altitude is swapped to Three.js Y in the COPC loader (LAS Z → position.y)
+    vElevation = position.y;
   }
 `;
 

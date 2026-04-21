@@ -59,7 +59,8 @@ const VERT_SHADER = /* glsl */`
     vColor          = color;
     vColorClass     = colorClass;
     vColorIntensity = colorIntensity;
-    vElevation      = position.z;
+    // Altitude is swapped to Three.js Y in the COPC loader (LAS Z → position.y)
+    vElevation      = position.y;
   }
 `;
 
