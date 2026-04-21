@@ -143,12 +143,10 @@ export class GaussianSplatMaterial extends THREE.RawShaderMaterial {
         uElevationMax: { value: 100 },
         uSpacing:      { value: 1.0 },
       },
-      // Transparent splats with depth write ON so they're visible in the EDL
-      // depth buffer. For mostly-flat terrain viewed from above, the depth
-      // sort artefacts from back-to-front overlap are negligible and the
-      // Gaussian alpha still gives the smooth, splat-like appearance.
+      // Depth writes disabled so overlapping transparent splats from different
+      // octree nodes blend cleanly without cutting each other at node boundaries.
       transparent: true,
-      depthWrite: true,
+      depthWrite: false,
       blending: THREE.NormalBlending,
     });
 

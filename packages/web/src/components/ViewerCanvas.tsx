@@ -178,17 +178,28 @@ export function ViewerCanvas({ cloudUrl, measurementStore, activeTool, onToolFin
       pcoRef.current = pco;
       scene.add(pco);
 
-      // Frame camera on the loaded cloud
+      // Frame camera on the loaded cloud.
+      // Use real elevation range (not the padded COPC cube) so the camera
+      // targets the actual data centroid rather than the middle of an empty sky.
       const bb = pco.getWorldBoundingBox();
+      const elevRange = pco.geometry.metadata.elevationRange;
       const center = bb.getCenter(new THREE.Vector3());
+      if (elevRange) {
+        // Replace the Y (altitude) component of the center with the real data midpoint
+        center.y = (elevRange[0] + elevRange[1]) / 2;
+      }
+      // XZ extent of the tile (ignore Y padding from COPC cube)
+      const xzSpan = Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z);
       const size = bb.getSize(new THREE.Vector3());
+      const effectiveSize = elevRange
+        ? new THREE.Vector3(size.x, elevRange[1] - elevRange[0], size.z)
+        : size;
       target.copy(center);
-      spherical.radius = size.length() * 0.8;
+      spherical.radius = Math.max(xzSpan, effectiveSize.length()) * 0.8;
       // No artificial minimum zoom — clamped to 0.1 world units in the wheel handler.
       updateCamera();
 
-      // Set elevation range from real LAS header extents (not the padded COPC cube)
-      const elevRange = pco.geometry.metadata.elevationRange;
+      // Set elevation range uniforms
       if (elevRange) {
         pco.material.updateElevationRange(elevRange[0], elevRange[1]);
         pco.gaussianMaterial.setElevationRange(elevRange[0], elevRange[1]);
