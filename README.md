@@ -18,9 +18,9 @@ A WebGL2-accelerated drone LiDAR point cloud viewer built as a pnpm monorepo.
 
 ### 3D viewer — four colour modes
 
-| RGB / Intensity | Classification |
+| Intensity (fallback when no RGB — IGN LiDAR HD PDRF 6) | Classification |
 |---|---|
-| ![RGB view](docs/screenshots/02-viewer-rgb.png) | ![Classification view](docs/screenshots/03-viewer-classification.png) |
+| ![Intensity view](docs/screenshots/02-viewer-rgb.png) | ![Classification view](docs/screenshots/03-viewer-classification.png) |
 
 | Elevation ramp | Return intensity |
 |---|---|
