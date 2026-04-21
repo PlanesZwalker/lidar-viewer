@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "LiDAR Viewer",
+    "slug": "lidar-viewer",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "scheme": "lidarviewer",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#0a0a14"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.lidarviewer"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0a0a14"
+      },
+      "package": "com.yourcompany.lidarviewer"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

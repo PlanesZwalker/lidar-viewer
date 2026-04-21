@@ -1,0 +1,23 @@
+services:
+  viewer:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "80:80"       # Remote/VPS access
+      - "8080:80"     # Local LAN access (tablet/phone on same WiFi)
+    volumes:
+      - ./data/pointclouds:/data/pointclouds:ro
+    restart: unless-stopped
+
+  # Optional: PDAL processing sidecar — converts LAS → COPC on the server.
+  # Uncomment when you want server-side format conversion.
+  #
+  # pdal:
+  #   image: pdal/pdal:latest
+  #   volumes:
+  #     - ./data:/data
+  #   entrypoint: ["sh", "-c", "while true; do sleep 3600; done"]
+  #   # Use: docker compose exec pdal pdal translate /data/input.las /data/pointclouds/out.copc.laz
+
+volumes: {}

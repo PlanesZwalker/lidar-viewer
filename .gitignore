@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+.turbo/
+
+# Vite cache
+.vite/
+
+# Environment (may contain secrets)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.suo
+*.user
+
+# Docker point cloud data (large binary files — add your own)
+docker/data/
+
+# Expo generated
+packages/mobile/.expo/
+packages/mobile/android/
+packages/mobile/ios/

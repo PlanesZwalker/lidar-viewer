@@ -1,0 +1,32 @@
+{
+  "name": "@lidar-viewer/measurements",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "three": "^0.172.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.172.0",
+    "vitest": "^3.0.5"
+  },
+  "peerDependencies": {
+    "three": ">=0.160.0"
+  }
+}

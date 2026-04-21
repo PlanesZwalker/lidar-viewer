@@ -1,0 +1,98 @@
+.canvas {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+/* ── Loading overlay ─────────────────────────────────────── */
+.loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(10, 10, 15, 0.88);
+  z-index: 20;
+  pointer-events: none;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(99, 179, 237, 0.18);
+  border-top-color: #63b3ed;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.04em;
+}
+
+/* ── Cloud info badge (top-centre of the visible area) ───── */
+.cloudInfo {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 12px;
+  background: rgba(8, 8, 18, 0.82);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  z-index: 5;
+  white-space: nowrap;
+}
+
+/* ── Gizmo axis labels ───────────────────────────────────── */
+.axisLabel {
+  position: absolute;
+  font-size: 10px;
+  font-weight: 700;
+  pointer-events: none;
+  z-index: 5;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+  user-select: none;
+}
+
+/* ── Scale bar (bottom-centre) ───────────────────────────── */
+.scalebar {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.scalebarInner {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.75);
+  border-left: 2px solid rgba(255, 255, 255, 0.75);
+  border-right: 2px solid rgba(255, 255, 255, 0.75);
+  min-width: 20px;
+  transition: width 0.25s ease;
+}
+
+.scalebarLabel {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.65);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  letter-spacing: 0.04em;
+}
